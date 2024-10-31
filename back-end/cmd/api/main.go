@@ -1,7 +1,7 @@
 package main
 
 import (
-	"database/sql"
+	"backend/internal/repository"
 	"flag"
 	"fmt"
 	"log"
@@ -11,9 +11,9 @@ import (
 const port = 8080
 
 type application struct {
-	Dsn    string
-	Domain string
-	Db     *sql.DB
+	Dsn        string
+	Domain     string
+	Repository repository.MoviesRepository
 }
 
 func main() {
@@ -33,7 +33,7 @@ func main() {
 	}
 	defer connection.Close()
 
-	app.Db = connection
+	app.Repository = &repository.PostgresMoviesRepository{Db: connection}
 	app.Domain = "example.com"
 
 	log.Println("Starting application on port", port)

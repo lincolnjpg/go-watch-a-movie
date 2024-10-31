@@ -12,7 +12,7 @@ func (app *application) routes() http.Handler {
 	mux.Use(middleware.Recoverer)
 	mux.Use(app.enableCors)
 	mux.Get("/home", app.Home)
-	mux.Get("/movies", app.AllMovies)
+	mux.Get("/movies", app.GetAllMovies)
 
 	return mux
 }
