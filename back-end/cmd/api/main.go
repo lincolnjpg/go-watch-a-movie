@@ -31,6 +31,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer connection.Close()
 
 	app.Db = connection
 	app.Domain = "example.com"
