@@ -37,7 +37,7 @@ func (m *PostgresMoviesRepository) GetAllMovies() ([]*models.Movie, error) {
 		FROM
 			movies
 		ORDER BY
-			title
+			title;
 	`
 
 	rows, err := m.Db.QueryContext(ctx, query)

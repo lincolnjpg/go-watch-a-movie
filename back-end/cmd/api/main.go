@@ -12,9 +12,10 @@ import (
 const port = 8080
 
 type application struct {
-	dsn        string
-	domain     string
-	repository repository.MoviesRepository
+	dsn              string
+	domain           string
+	moviesRepository repository.MoviesRepository
+	userRepository   repository.UserRepository
 	auth
 	jwtSecret   string
 	jwtIssuer   string
@@ -56,7 +57,7 @@ func main() {
 		},
 	}
 
-	app.repository = &repository.PostgresMoviesRepository{Db: connection}
+	app.moviesRepository = &repository.PostgresMoviesRepository{Db: connection}
 
 	log.Println("Starting application on port", port)
 
