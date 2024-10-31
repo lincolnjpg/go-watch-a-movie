@@ -51,6 +51,7 @@ func (app *application) authenticate(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Println(tokens.accesToken)
-
+	refreshCookie := app.auth.getRefreshCookie(tokens.refreshToken)
+	http.SetCookie(w, refreshCookie)
 	w.Write([]byte(tokens.accesToken))
 }
