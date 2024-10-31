@@ -6,25 +6,35 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 )
 
 const port = 8080
 
 type application struct {
-	Dsn        string
-	Domain     string
-	Repository repository.MoviesRepository
+	dsn        string
+	domain     string
+	repository repository.MoviesRepository
+	auth
+	jwtSecret   string
+	jwtIssuer   string
+	jwtAudience string
 }
 
 func main() {
 	var app application
 
 	flag.StringVar(
-		&app.Dsn,
+		&app.dsn,
 		"dsn",
 		"host=localhost port=5432 user=postgres password=postgres dbname=movies sslmode=disable timezone=UTC connect_timeout=5",
 		"Postgres connection string",
 	)
+	flag.StringVar(&app.jwtSecret, "jwt-secret", "verysecret", "signing secret")
+	flag.StringVar(&app.jwtIssuer, "jwt-issuer", "example.com", "signing issuer")
+	flag.StringVar(&app.jwtAudience, "jwt-audience", "example.com", "signing audience")
+	flag.StringVar(&app.domain, "domain", "example.com", "domain")
+	flag.StringVar(&app.cookie.domain, "cookie-domain", "localhost", "cookie domain")
 	flag.Parse()
 
 	connection, err := app.connectToDb()
@@ -33,8 +43,20 @@ func main() {
 	}
 	defer connection.Close()
 
-	app.Repository = &repository.PostgresMoviesRepository{Db: connection}
-	app.Domain = "example.com"
+	app.auth = auth{
+		issuer:        app.jwtIssuer,
+		audience:      app.jwtAudience,
+		secret:        app.jwtSecret,
+		tokenExpiry:   time.Minute * 15,
+		refreshExpiry: time.Hour * 24,
+		cookie: cookie{
+			path:   "/",
+			name:   "__Host-refresh_token",
+			domain: app.cookie.domain,
+		},
+	}
+
+	app.repository = &repository.PostgresMoviesRepository{Db: connection}
 
 	log.Println("Starting application on port", port)
 
