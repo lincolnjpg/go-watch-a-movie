@@ -58,6 +58,7 @@ func main() {
 	}
 
 	app.moviesRepository = &repository.PostgresMoviesRepository{Db: connection}
+	app.userRepository = &repository.PostgresUserRepository{Db: connection}
 
 	log.Println("Starting application on port", port)
 

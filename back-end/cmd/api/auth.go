@@ -24,14 +24,14 @@ type cookie struct {
 }
 
 type jwtUser struct {
-	id        int    `json:"id"`
-	firstName string `json:"first_name"`
-	lastName  string `json:"last_name"`
+	id        int
+	firstName string
+	lastName  string
 }
 
 type tokenPairs struct {
-	accesToken   string `json:"access_token"`
-	refreshToken string `json:"refresh_token"`
+	AccesToken   string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
 }
 
 type claims struct {
@@ -78,8 +78,8 @@ func (j *auth) generateTokenPair(user *jwtUser) (tokenPairs, error) {
 
 	// create tokenPais and populate with signed tokens
 	var tokenPairs = tokenPairs{
-		accesToken:   signedAccessToken,
-		refreshToken: signedRefreshToken,
+		AccesToken:   signedAccessToken,
+		RefreshToken: signedRefreshToken,
 	}
 
 	// return tokenPairs
