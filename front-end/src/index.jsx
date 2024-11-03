@@ -1,16 +1,16 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import ErrorPage from './components/ErrorPage';
-import Home from './components/Home';
-import Movies from './components/Movies';
-import Genres from './components/Genres';
-import EditMovie from './components/EditMovie';
-import ManageCatalog from './components/ManageCatalog';
-import GraphQL from './components/GraphQL';
-import Login from './components/Login';
-import Movie from './components/Movie';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import ErrorPage from "./components/ErrorPage";
+import Home from "./components/Home";
+import Movies from "./components/Movies";
+import Genres from "./components/Genres";
+import EditMovie from "./components/EditMovie";
+import ManageCatalog from "./components/ManageCatalog";
+import GraphQL from "./components/GraphQL";
+import Login from "./components/Login";
+import Movie from "./components/Movie";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +39,10 @@ const router = createBrowserRouter([
         element: <EditMovie />,
       },
       {
+        path: "/admin/movie/:id",
+        element: <EditMovie />,
+      },
+      {
         path: "/manage-catalog",
         element: <ManageCatalog />,
       },
@@ -50,14 +54,13 @@ const router = createBrowserRouter([
         path: "/login",
         element: <Login />,
       },
-    ]
-  }
-])
+    ],
+  },
+]);
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
     <RouterProvider router={router} />
   </React.StrictMode>
 );
-

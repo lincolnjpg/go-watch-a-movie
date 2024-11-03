@@ -15,7 +15,7 @@ type application struct {
 	dsn              string
 	domain           string
 	moviesRepository repository.MoviesRepository
-	genresRepository repository.PostgresGenresRepository
+	genresRepository repository.GenreRepository
 	userRepository   repository.UserRepository
 	auth
 	jwtSecret   string
@@ -60,6 +60,7 @@ func main() {
 
 	app.moviesRepository = &repository.PostgresMoviesRepository{Db: connection}
 	app.userRepository = &repository.PostgresUserRepository{Db: connection}
+	app.genresRepository = &repository.PostgresGenresRepository{Db: connection}
 
 	log.Println("Starting application on port", port)
 
