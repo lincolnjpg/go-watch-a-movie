@@ -1,10 +1,12 @@
 package main
 
 import (
+	"backend/internal/models"
 	"errors"
 	"net/http"
 	"strconv"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/golang-jwt/jwt/v4"
 )
 
@@ -142,4 +144,47 @@ func (app *application) movieCatalog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_ = app.writeJson(w, http.StatusOK, movies)
+}
+
+func (app *application) getMovie(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	movieId, err := strconv.Atoi(id)
+	if err != nil {
+		app.errorJson(w, err)
+		return
+	}
+
+	movie, err := app.moviesRepository.GetMovieById(movieId)
+	if err != nil {
+		app.errorJson(w, err)
+		return
+	}
+
+	_ = app.writeJson(w, http.StatusOK, movie)
+}
+
+// for admin
+func (app *application) movieForEdit(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	movieId, err := strconv.Atoi(id)
+	if err != nil {
+		app.errorJson(w, err)
+		return
+	}
+
+	movie, genres, err := app.moviesRepository.GetMovieByIdForEdit(movieId)
+	if err != nil {
+		app.errorJson(w, err)
+		return
+	}
+
+	var payload = struct {
+		Movie  *models.Movie   `json:"movie"`
+		Genres []*models.Genre `json:"genres"`
+	}{
+		movie,
+		genres,
+	}
+
+	_ = app.writeJson(w, http.StatusOK, payload)
 }

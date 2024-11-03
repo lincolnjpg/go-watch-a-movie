@@ -8,4 +8,6 @@ import (
 type MoviesRepository interface {
 	Connection() *sql.DB
 	GetAllMovies() ([]*models.Movie, error)
+	GetMovieById(id int) (*models.Movie, error)
+	GetMovieByIdForEdit(id int) (*models.Movie, []*models.Genre, error)
 }

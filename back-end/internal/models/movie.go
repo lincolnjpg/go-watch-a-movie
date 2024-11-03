@@ -12,4 +12,6 @@ type Movie struct {
 	Image       string    `json:"image"`
 	CreatedAt   time.Time `json:"-"`
 	UpdatedAt   time.Time `json:"-"`
+	Genres      []*Genre  `json:"genres,omitempty"`
+	GenresArray []int     `json:"genres_array,omitempty"`
 }
