@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 import Input from "./form/Input";
 import Select from "./form/Select";
 import TextArea from "./form/TextArea";
@@ -100,6 +101,37 @@ const EditMovie = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    let errors = [];
+    let required = [
+      { field: movie.title, name: "title" },
+      { field: movie.release_date, name: "release_date" },
+      { field: movie.runtime, name: "runtime" },
+      { field: movie.description, name: "description" },
+      { field: movie.mpaa_rating, name: "mpaa_rating" },
+    ];
+
+    required.forEach(function (obj) {
+      if (obj.field === "") {
+        errors.push(obj.name);
+      }
+    });
+
+    if (!movie.genres_array.length) {
+      Swal.fire({
+        title: "Error!",
+        text: "You must choose at least one genre!",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+      errors.push("genres");
+    }
+
+    setErrors(errors);
+
+    if (errors.length > 0) {
+      return false;
+    }
   };
 
   const handleChange = () => (event) => {
@@ -141,7 +173,7 @@ const EditMovie = () => {
     <div>
       <h2>Add/Edit Movie</h2>
       <hr />
-      <pre>{JSON.stringify(movie, null, 3)}</pre>
+      {/* <pre>{JSON.stringify(movie, null, 3)}</pre> */}
 
       <form onSubmit={handleSubmit}>
         <input type="hidden" name="id" value={movie.id} id="id" />
@@ -216,6 +248,9 @@ const EditMovie = () => {
             ))}
           </>
         )}
+
+        <hr />
+        <button className="btn btn-primary">Save</button>
       </form>
     </div>
   );
