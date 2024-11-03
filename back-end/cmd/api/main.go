@@ -15,6 +15,7 @@ type application struct {
 	dsn              string
 	domain           string
 	moviesRepository repository.MoviesRepository
+	genresRepository repository.PostgresGenresRepository
 	userRepository   repository.UserRepository
 	auth
 	jwtSecret   string
