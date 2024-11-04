@@ -30,7 +30,7 @@ func New(movies []*models.Movie) *Graph {
 				"description": &graphql.Field{
 					Type: graphql.String,
 				},
-				"release_data": &graphql.Field{
+				"release_date": &graphql.Field{
 					Type: graphql.DateTime,
 				},
 				"runtime": &graphql.Field{
