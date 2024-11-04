@@ -11,5 +11,6 @@ type MoviesRepository interface {
 	GetMovieById(id int) (*models.Movie, error)
 	GetMovieByIdForEdit(id int) (*models.Movie, []*models.Genre, error)
 	InsertMovie(movie models.Movie) (int, error)
+	UpdateMovie(movie models.Movie) error
 	UpdateMovieGenres(id int, genreIds []int) error
 }
