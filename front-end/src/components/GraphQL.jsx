@@ -9,9 +9,47 @@ const GraphQL = () => {
   const [fullList, setFullList] = useState([]);
 
   // perform a search
-  const performSearch = () => {};
+  const performSearch = () => {
+    const payload = `{
+            search(titleContains: "${searchTerm}") {
+                id
+                title
+                runtime
+                release_date
+                mpaa_rating
+            }
+        }`;
 
-  const handleChange = (event) => {};
+    const headers = new Headers();
+    headers.append("Content-Type", "application/graphql");
+
+    const requestOptions = {
+      method: "POST",
+      headers,
+      body: payload,
+    };
+
+    fetch(`/graph`, requestOptions)
+      .then((response) => response.json())
+      .then((response) => {
+        let moviesList = Object.values(response.data.search);
+        setMovies(moviesList);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const handleChange = (event) => {
+    event.preventDefault();
+
+    let value = event.target.value;
+    setSearchTerm(value);
+
+    if (value.length > 2) {
+      performSearch();
+    } else {
+      setMovies(fullList);
+    }
+  };
 
   // useEffect
   useEffect(() => {
@@ -37,9 +75,9 @@ const GraphQL = () => {
     fetch(`/graph`, requestOptions)
       .then((response) => response.json())
       .then((response) => {
-        let list = Object.values(response.data.list);
-        setMovies(list);
-        setFullList(list);
+        let moviesList = Object.values(response.data.list);
+        setMovies(moviesList);
+        setFullList(moviesList);
       })
       .catch((error) => console.log(error));
   }, []);
