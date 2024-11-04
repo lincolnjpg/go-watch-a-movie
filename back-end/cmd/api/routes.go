@@ -20,6 +20,7 @@ func (app *application) routes() http.Handler {
 	mux.Get("/genres", app.getAllGenres)
 	mux.Post("/authenticate", app.authenticate)
 	mux.Get("/refresh", app.refreshToken)
+	mux.Get("/graph", app.moviesGraphQl)
 	mux.Get("/logout", app.logout)
 
 	mux.Route("/admin", func(adminMux chi.Router) {
