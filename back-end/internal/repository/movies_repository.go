@@ -13,4 +13,5 @@ type MoviesRepository interface {
 	InsertMovie(movie models.Movie) (int, error)
 	UpdateMovie(movie models.Movie) error
 	UpdateMovieGenres(id int, genreIds []int) error
+	DeleteMovieById(id int) error
 }

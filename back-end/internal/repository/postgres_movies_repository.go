@@ -373,3 +373,22 @@ func (m *PostgresMoviesRepository) UpdateMovieGenres(id int, genreIds []int) err
 
 	return nil
 }
+
+func (m *PostgresMoviesRepository) DeleteMovieById(id int) error {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeout)
+	defer cancel()
+
+	stmt := `
+		DELETE FROM
+			movies
+		WHERE
+			id = $1
+	`
+
+	_, err := m.Db.ExecContext(ctx, stmt, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

@@ -322,3 +322,24 @@ func (app *application) updateMovie(w http.ResponseWriter, r *http.Request) {
 
 	app.writeJson(w, http.StatusAccepted, response)
 }
+
+func (app *application) deleteMovieById(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		app.errorJson(w, err)
+		return
+	}
+
+	err = app.moviesRepository.DeleteMovieById(id)
+	if err != nil {
+		app.errorJson(w, err)
+		return
+	}
+
+	response := JsonResponse{
+		Error:   false,
+		Message: "movie deleted",
+	}
+
+	app.writeJson(w, http.StatusAccepted, response)
+}
