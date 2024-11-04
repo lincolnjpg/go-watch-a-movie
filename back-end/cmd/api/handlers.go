@@ -343,3 +343,19 @@ func (app *application) deleteMovieById(w http.ResponseWriter, r *http.Request) 
 
 	app.writeJson(w, http.StatusAccepted, response)
 }
+
+func (app *application) getAllMoviesByGenre(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		app.errorJson(w, err)
+		return
+	}
+
+	movies, err := app.moviesRepository.GetAllMovies(id)
+	if err != nil {
+		app.errorJson(w, err)
+		return
+	}
+
+	app.writeJson(w, http.StatusOK, movies)
+}
