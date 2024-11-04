@@ -2,9 +2,15 @@ package main
 
 import (
 	"backend/internal/models"
+	"encoding/json"
 	"errors"
+	"fmt"
+	"io"
+	"log"
 	"net/http"
+	"net/url"
 	"strconv"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/golang-jwt/jwt/v4"
@@ -208,10 +214,57 @@ func (app *application) insertMovie(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	movie = app.getPoster(movie)
+	movie.CreatedAt = time.Now()
+	movie.UpdatedAt = time.Now()
+
 	response := JsonResponse{
 		Error:   false,
 		Message: "movie updated",
 	}
 
 	app.writeJson(w, http.StatusAccepted, response)
+}
+
+func (app *application) getPoster(movie models.Movie) models.Movie {
+	type theMovieDb struct {
+		Page    int `json:"page"`
+		Results []struct {
+			PosterPath string `json:"poster_path"`
+		} `json:"results"`
+	}
+
+	client := &http.Client{}
+	baseUrl := fmt.Sprintf("https://api.themoviedb.org/3/search/movie?api_key=%s", app.apiKey)
+
+	req, err := http.NewRequest("GET", baseUrl+"&query="+url.QueryEscape(movie.Title), nil)
+	if err != nil {
+		log.Println(err)
+		return movie
+	}
+
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Content-Type", "application/json")
+
+	resp, err := client.Do(req)
+	if err != nil {
+		log.Println(err)
+		return movie
+	}
+	defer resp.Body.Close()
+
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Println(err)
+		return movie
+	}
+
+	var responseObject theMovieDb
+	json.Unmarshal(bodyBytes, &responseObject)
+
+	if len(responseObject.Results) > 1 {
+		movie.Image = responseObject.Results[0].PosterPath
+	}
+
+	return movie
 }
