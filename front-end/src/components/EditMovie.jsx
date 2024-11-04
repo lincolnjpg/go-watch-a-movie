@@ -96,6 +96,43 @@ const EditMovie = () => {
         })
         .catch((error) => console.log(error));
     } else {
+      const headers = new Headers();
+      headers.append("Content-Type", "application/json");
+      headers.append("Authorization", "Bearer " + jwtToken);
+      const requestOptions = {
+        method: "GET",
+        headers,
+      };
+      fetch(`/admin/movies/${id}`, requestOptions)
+        .then((response) => {
+          if (response.status !== 200) {
+            setError("Invalid response code: ", response.status);
+          }
+
+          return response.json();
+        })
+        .then((data) => {
+          data.movie.release_date = new Date(data.movie.release_date)
+            .toISOString()
+            .split("T")[0];
+
+          const checks = [];
+          data.genres.forEach((g) => {
+            if (data.movie.genres_array.indexOf(g.id) !== -1) {
+              checks.push({ id: g.id, checked: true, genre: g.genre });
+            } else {
+              checks.push({ id: g.id, checked: false, genre: g.genre });
+            }
+          });
+
+          console.log("data: ", data.movie);
+
+          setMovie({
+            ...data.movie,
+            genres: checks,
+          });
+        })
+        .catch((error) => console.log(error));
     }
   }, [id, jwtToken, navigate]);
 
@@ -246,6 +283,7 @@ const EditMovie = () => {
           title={"MPAA Rating"}
           name={"mpaa_rating"}
           options={mpaaOptions}
+          value={movie.mpaa_rating}
           onChange={handleChange("mpaa_rating")}
           placeHolder={"Choose"}
           errorMsg={"Please choose"}
